@@ -8,7 +8,6 @@ import android.app.NotificationManager
 import android.content.Intent
 import id.ismail.pasienapps.MainActivity
 import android.app.PendingIntent
-import android.os.Build
 import android.app.NotificationChannel
 import androidx.core.app.NotificationCompat
 import id.ismail.pasienapps.R
@@ -43,17 +42,15 @@ class MyFirebaseInstanceService : FirebaseMessagingService() {
             PendingIntent.FLAG_ONE_SHOT
         )
         val notifId = "id.ismail.pasienapps"
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val notificationChannel = NotificationChannel(
-                notifId, deskripsi,
-                NotificationManager.IMPORTANCE_DEFAULT
-            )
-            notificationChannel.description = body
-            notificationChannel.enableLights(true)
-            notificationChannel.lightColor = Color.BLUE
-            notificationChannel.enableVibration(true)
-            notificationManager.createNotificationChannel(notificationChannel)
-        }
+        val notificationChannel = NotificationChannel(
+            notifId, deskripsi,
+            NotificationManager.IMPORTANCE_DEFAULT
+        )
+        notificationChannel.description = body
+        notificationChannel.enableLights(true)
+        notificationChannel.lightColor = Color.BLUE
+        notificationChannel.enableVibration(true)
+        notificationManager.createNotificationChannel(notificationChannel)
         val notificationBuilder = NotificationCompat.Builder(this, notifId)
             .setSmallIcon(R.drawable.patient_icon)
             .setLargeIcon(

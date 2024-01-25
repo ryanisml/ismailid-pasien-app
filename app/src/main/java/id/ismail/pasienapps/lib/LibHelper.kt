@@ -12,7 +12,7 @@ import java.lang.StringBuilder
 import java.util.*
 
 object LibHelper {
-    var my_url = "https://klinik.ismail.id/myklinik/notification-admin"
+    var my_url = "http://10.0.2.2/klinik-reservation/notification-admin"
     val deviceName: String
         get() {
             val manufacturer = Build.MANUFACTURER
@@ -70,8 +70,7 @@ object LibHelper {
     }
 
     fun convertMonth(month: Int): String {
-        val bulan: String
-        bulan = when (month) {
+        val bulan: String = when (month) {
             1 -> "Januari"
             2 -> "Februari"
             3 -> "Maret"

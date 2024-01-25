@@ -7,6 +7,7 @@ import id.ismail.pasienapps.lib.SharedPasien
 import android.os.Bundle
 import android.content.Intent
 import android.os.Handler
+import android.os.Looper
 
 @SuppressLint("CustomSplashScreen")
 class SplashScreenActivity : AppCompatActivity() {
@@ -17,8 +18,11 @@ class SplashScreenActivity : AppCompatActivity() {
         setContentView(R.layout.activity_splash_screen)
         mContext = this
         sharedPref = SharedPasien(mContext as SplashScreenActivity)
+        val mainHandler = Handler(Looper.getMainLooper())
+
         val splashInterval = 1500
-        Handler().postDelayed({
+
+        mainHandler.postDelayed({
             finish()
             if (sharedPref!!.spSudahLogin) {
                 startActivity(Intent(mContext, MainActivity::class.java))
