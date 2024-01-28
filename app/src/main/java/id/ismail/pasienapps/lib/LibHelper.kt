@@ -12,7 +12,7 @@ import java.lang.StringBuilder
 import java.util.*
 
 object LibHelper {
-    var my_url = "http://10.0.2.2/klinik-reservation/notification-admin"
+    var my_url = "https://klinik.ismail.id/notification-admin"
     val deviceName: String
         get() {
             val manufacturer = Build.MANUFACTURER

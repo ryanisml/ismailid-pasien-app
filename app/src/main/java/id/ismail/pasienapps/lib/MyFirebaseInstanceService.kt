@@ -31,40 +31,29 @@ class MyFirebaseInstanceService : FirebaseMessagingService() {
     }
 
     private fun showNotification(title: String?, body: String?, deskripsi: String?, statusid: Int) {
-        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-        val notificationIntent = Intent(this, MainActivity::class.java)
-        notificationIntent.addFlags(
-            Intent.FLAG_ACTIVITY_NEW_TASK or
-                    Intent.FLAG_ACTIVITY_SINGLE_TOP
+        val intent = Intent(this, MainActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        intent.putExtra("statusid", statusid)
+        val pendingIntent = PendingIntent.getActivity(
+            this, 0, intent,
+            PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_MUTABLE
         )
-        @SuppressLint("UnspecifiedImmutableFlag") val pendingIntent = PendingIntent.getActivity(
-            this, statusid /* Request code */, notificationIntent,
-            PendingIntent.FLAG_ONE_SHOT
-        )
-        val notifId = "id.ismail.pasienapps"
-        val notificationChannel = NotificationChannel(
-            notifId, deskripsi,
-            NotificationManager.IMPORTANCE_DEFAULT
-        )
-        notificationChannel.description = body
-        notificationChannel.enableLights(true)
-        notificationChannel.lightColor = Color.BLUE
-        notificationChannel.enableVibration(true)
-        notificationManager.createNotificationChannel(notificationChannel)
-        val notificationBuilder = NotificationCompat.Builder(this, notifId)
-            .setSmallIcon(R.drawable.patient_icon)
-            .setLargeIcon(
-                BitmapFactory.decodeResource(
-                    applicationContext.resources,
-                    R.drawable.patient_icon
-                )
-            )
+        val channelId = "id.ismail.pasienapps"
+        val builder = NotificationCompat.Builder(this, channelId)
+            .setSmallIcon(R.drawable.ic_launcher_background)
+            .setLargeIcon(BitmapFactory.decodeResource(this.resources, R.drawable.ic_launcher_background))
             .setContentTitle(title)
             .setContentText(body)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(deskripsi))
             .setAutoCancel(true)
-            .setContentInfo(deskripsi)
-            .setDefaults(Notification.DEFAULT_ALL)
             .setContentIntent(pendingIntent)
-        notificationManager.notify(statusid /* ID of notification */, notificationBuilder.build())
+        val manager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        val channel = NotificationChannel(
+            channelId,
+            "Reservation Channel",
+            NotificationManager.IMPORTANCE_DEFAULT
+        )
+        manager.createNotificationChannel(channel)
+        manager.notify(0, builder.build())
     }
 }

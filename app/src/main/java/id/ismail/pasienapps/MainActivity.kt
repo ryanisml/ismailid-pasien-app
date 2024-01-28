@@ -23,6 +23,7 @@ import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.*
+import id.ismail.pasienapps.lib.NotificationPermissionHandler
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -61,6 +62,8 @@ class MainActivity : AppCompatActivity() {
         mContext = this
         sharedPasien = SharedPasien(mContext as MainActivity)
         db = FirebaseFirestore.getInstance()
+
+        NotificationPermissionHandler.checkNotificationPermission(mContext!!)
         ivSetting = findViewById(R.id.iv_setting)
         tvNama = findViewById(R.id.tv_nama)
         tvNotelp = findViewById(R.id.tv_notelp)
