@@ -25,6 +25,7 @@ import com.google.firebase.auth.AuthResult
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.messaging.FirebaseMessaging
 import android.content.Intent
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
@@ -53,6 +54,10 @@ class OtpActivity : AppCompatActivity() {
     private var db: FirebaseFirestore? = null
     private var tvResend: TextView? = null
     private var tvTime: TextView? = null
+    private var tvPhone: TextView? = null
+    private var forceResendingToken: ForceResendingToken? = null
+
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_otp)
@@ -68,10 +73,12 @@ class OtpActivity : AppCompatActivity() {
         btnVerifikasi = findViewById(R.id.btn_verifikasi)
         tvResend = findViewById(R.id.tv_resend)
         tvTime = findViewById(R.id.tv_time)
+        tvPhone = findViewById(R.id.tvPhone)
         codeprov = intent.getStringExtra("kCode")
         notelp = intent.getStringExtra("kPhone")
         startTimerThread()
         initComponents()
+        tvPhone!!.text = codeprov + "" + notelp
         loading = LibHelper.inisiasiLoading(mContext)
     }
 
@@ -208,15 +215,32 @@ class OtpActivity : AppCompatActivity() {
             verifyCode(code)
         }
         tvResend!!.setOnClickListener {
+            tvResend!!.visibility = View.GONE
+            resendVerificationCode(codeprov + "" + notelp, forceResendingToken)
+            startTimerThread()
+        }
+    }
+
+    private fun resendVerificationCode(phoneNumber: String, token: ForceResendingToken?) {
+        if (token != null) {
             PhoneAuthProvider.verifyPhoneNumber(
                 PhoneAuthOptions.newBuilder(FirebaseAuth.getInstance())
-                    .setActivity(this@OtpActivity)
-                    .setPhoneNumber(codeprov + "" + notelp)
+                    .setActivity(this)
+                    .setPhoneNumber(phoneNumber)
+                    .setTimeout(60L, TimeUnit.SECONDS)
+                    .setCallbacks(mCallbacks)
+                    .setForceResendingToken(token)
+                    .build()
+            )
+        } else {
+            PhoneAuthProvider.verifyPhoneNumber(
+                PhoneAuthOptions.newBuilder(FirebaseAuth.getInstance())
+                    .setActivity(this)
+                    .setPhoneNumber(phoneNumber)
                     .setTimeout(60L, TimeUnit.SECONDS)
                     .setCallbacks(mCallbacks)
                     .build()
             )
-            startTimerThread()
         }
     }
 
@@ -236,6 +260,7 @@ class OtpActivity : AppCompatActivity() {
             override fun onCodeSent(s: String, forceResendingToken: ForceResendingToken) {
                 super.onCodeSent(s, forceResendingToken)
                 verifBySistem = s
+                this@OtpActivity.forceResendingToken = forceResendingToken
             }
 
             override fun onVerificationCompleted(phoneAuthCredential: PhoneAuthCredential) {
@@ -253,7 +278,22 @@ class OtpActivity : AppCompatActivity() {
                 val alertDialog = AlertDialog.Builder(
                     mContext!!
                 ).create()
-                alertDialog.setMessage("Gagal : " + e.message)
+                alertDialog.setMessage("Verification failed : " + e.message)
+                alertDialog.setButton(
+                    AlertDialog.BUTTON_POSITIVE, "OK"
+                ) { dialog: DialogInterface, _: Int -> dialog.dismiss() }
+                alertDialog.show()
+            }
+
+            override fun onCodeAutoRetrievalTimeOut(s: String) {
+                super.onCodeAutoRetrievalTimeOut(s)
+                if (loading != null) {
+                    loading!!.dismiss()
+                }
+                val alertDialog = AlertDialog.Builder(
+                    mContext!!
+                ).create()
+                alertDialog.setMessage("Verification timeout")
                 alertDialog.setButton(
                     AlertDialog.BUTTON_POSITIVE, "OK"
                 ) { dialog: DialogInterface, _: Int -> dialog.dismiss() }
@@ -262,8 +302,21 @@ class OtpActivity : AppCompatActivity() {
         }
 
     private fun verifyCode(codefire: String) {
-        val credential = PhoneAuthProvider.getCredential(verifBySistem!!, codefire)
-        signByCredential(credential)
+        if (verifBySistem != null) {
+            val credential = PhoneAuthProvider.getCredential(verifBySistem!!, codefire)
+            signByCredential(credential)
+        } else {
+            loading!!.dismiss()
+            // Handle the case where verifBySistem is null
+            val alertDialog = AlertDialog.Builder(
+                mContext!!
+            ).create()
+            alertDialog.setMessage("Verification system is null")
+            alertDialog.setButton(
+                AlertDialog.BUTTON_POSITIVE, "OK"
+            ) { dialog: DialogInterface, _: Int -> dialog.dismiss() }
+            alertDialog.show()
+        }
     }
 
     private fun signByCredential(credential: PhoneAuthCredential) {

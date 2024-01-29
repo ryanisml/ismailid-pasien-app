@@ -6,7 +6,7 @@ apply plugin: 'com.google.firebase.crashlytics'
 android {
     signingConfigs {
         AndroidKey {
-            storeFile file('..\\..\\AndroidKey\\android.jks')
+            storeFile file('/Users/mail/programming/android/AndroidKey/android.jks')
             storePassword '192837465'
             keyAlias 'AndroidKey'
             keyPassword '192837465'
@@ -19,8 +19,8 @@ android {
         applicationId "id.ismail.pasienapps"
         minSdk 28
         targetSdkVersion 34
-        versionCode 2
-        versionName "1.1.2024"
+        versionCode 6
+        versionName "1.2.2024"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.AndroidKey
@@ -30,6 +30,10 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            debuggable true
+            signingConfig signingConfigs.AndroidKey
         }
     }
     compileOptions {
@@ -47,6 +51,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation platform('com.google.firebase:firebase-bom:26.1.0')
+    implementation("com.google.firebase:firebase-appcheck-playintegrity:17.1.1")
     implementation 'com.google.firebase:firebase-crashlytics'
     implementation 'com.google.firebase:firebase-analytics'
     implementation 'com.google.firebase:firebase-auth'

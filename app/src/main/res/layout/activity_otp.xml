@@ -52,9 +52,20 @@
                 android:src="@drawable/smsotp" />
 
             <TextView
+                android:id="@+id/tvPhone"
                 android:layout_width="280dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:textSize="20dp"
+                android:text="+62 812 3456 7890"
+                android:textColor="@color/grey_60" />
+
+            <TextView
+                android:layout_width="280dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
                 android:gravity="center"
                 android:text="OTP has been sent to you on your mobile phone. Please enter it below"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
@@ -220,6 +231,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Resend OTP"
+                android:padding="10dp"
                 android:textSize="18dp"
                 android:textColor="@color/colorPrimary"
                 android:layout_gravity="center"/>
