@@ -4,7 +4,7 @@
 This project is linked with :
 - [Web Admin Reservation](https://github.com/ryanisml/klinik-reservation)
 - [Mobile Doctor Apps](https://github.com/ryanisml/ismailid-dokter-app)
-- [Mobile Patient Apps](https://github.com/ryanisml/ismailid-pasien-app)
+- [Mobile Patient Apps](https://github.com/ryanisml/ismailid-pasien-app) -> you are here
 
 ## Tools
 This app made with
