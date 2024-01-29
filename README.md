@@ -2,7 +2,7 @@
 ## About
 #### This is an example mobile android application - clinic reservation for Patient.
 This project is linked with :
-- [Web Admin Reservation](https://github.com/ryanisml/klinik-reservation)
+- [Web Clinic Reservation](https://github.com/ryanisml/klinik-reservation)
 - [Mobile Doctor Apps](https://github.com/ryanisml/ismailid-dokter-app)
 - [Mobile Patient Apps](https://github.com/ryanisml/ismailid-pasien-app) -> you are here
 
