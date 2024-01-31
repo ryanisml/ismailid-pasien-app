@@ -78,6 +78,7 @@ class OtpActivity : AppCompatActivity() {
         notelp = intent.getStringExtra("kPhone")
         startTimerThread()
         initComponents()
+        checkVerification()
         tvPhone!!.text = codeprov + "" + notelp
         loading = LibHelper.inisiasiLoading(mContext)
     }
@@ -109,7 +110,6 @@ class OtpActivity : AppCompatActivity() {
     }
 
     private fun initComponents() {
-        FirebaseAuth.getInstance().firebaseAuthSettings.forceRecaptchaFlowForTesting(true)
         etSatu!!.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
@@ -171,7 +171,6 @@ class OtpActivity : AppCompatActivity() {
 
             override fun afterTextChanged(s: Editable) {}
         })
-        checkVerification()
         btnVerifikasi!!.setOnClickListener {
             val code1 = etSatu!!.text.toString().trim { it <= ' ' }
             val code2 = etDua!!.text.toString().trim { it <= ' ' }
@@ -233,14 +232,7 @@ class OtpActivity : AppCompatActivity() {
                     .build()
             )
         } else {
-            PhoneAuthProvider.verifyPhoneNumber(
-                PhoneAuthOptions.newBuilder(FirebaseAuth.getInstance())
-                    .setActivity(this)
-                    .setPhoneNumber(phoneNumber)
-                    .setTimeout(60L, TimeUnit.SECONDS)
-                    .setCallbacks(mCallbacks)
-                    .build()
-            )
+            checkVerification()
         }
     }
 
@@ -293,7 +285,7 @@ class OtpActivity : AppCompatActivity() {
                 val alertDialog = AlertDialog.Builder(
                     mContext!!
                 ).create()
-                alertDialog.setMessage("Verification timeout")
+                alertDialog.setMessage("Verification timeout $s")
                 alertDialog.setButton(
                     AlertDialog.BUTTON_POSITIVE, "OK"
                 ) { dialog: DialogInterface, _: Int -> dialog.dismiss() }
@@ -403,13 +395,14 @@ class OtpActivity : AppCompatActivity() {
                         }
                     }
                 } else {
-                    if (task.exception != null) {
-                        Toast.makeText(
-                            mContext,
-                            "Gagal sign " + task.exception!!.message,
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
+//                    if (task.exception != null) {
+//                        AlertDialog.Builder(mContext!!)
+//                            .setMessage("Gagal sign " + task.exception!!.message)
+//                            .setPositiveButton("OK") { dialog: DialogInterface, _: Int ->
+//                                dialog.dismiss()
+//                            }
+//                            .show()
+//                    }
                     if (loading != null) {
                         loading!!.dismiss()
                     }
